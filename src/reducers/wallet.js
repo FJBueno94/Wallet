@@ -1,4 +1,4 @@
-import FINANCIAL_INFO from '../actions/index';
+import { FINANCIAL_INFO } from '../actions/index';
 
 const INITIAL_STATE = {
   currencies: [],

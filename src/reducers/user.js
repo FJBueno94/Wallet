@@ -1,4 +1,4 @@
-import PERSONAL_INFO from '../actions/index';
+import { PERSONAL_INFO } from '../actions/index';
 
 const INITIAL_STATE = {
   email: '',
