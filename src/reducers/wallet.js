@@ -9,7 +9,7 @@ const moneyReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
   case FINANCIAL_INFO:
     return {
-      ...state, ...action.state,
+      ...state, currencies: action.state,
     };
   default:
     return state;
