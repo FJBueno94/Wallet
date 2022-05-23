@@ -14,7 +14,8 @@ class Login extends React.Component {
     };
   }
 
-  onsubmit = () => {
+  onsubmit = (event) => {
+    event.preventDefault();
     const { handleClick } = this.props;
     handleClick(this.state);
     const { history } = this.props;
@@ -70,7 +71,7 @@ class Login extends React.Component {
               data-testid="password-input"
             />
             <button
-              type="button"
+              type="submit"
               label="Entrar"
               disabled={ disabled }
               onClick={ this.onsubmit }

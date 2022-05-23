@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { curreniciesAction } from '../actions';
+import { curreniciesAction, expensesAction } from '../actions';
 
 export class Form extends Component {
   constructor() {
     super();
 
     this.state = {
-      despesas: 0,
-      descricao: '',
-      moedas: 'USD',
-      pagamento: 'Dinheiro',
-      categoria: 'Alimentação',
+      value: 0,
+      description: '',
+      currency: 'USD',
+      method: 'Dinheiro',
+      tag: 'Alimentação',
+      id: 0,
+      exchangeRates: {},
     };
   }
 
@@ -26,13 +28,26 @@ export class Form extends Component {
     this.setState({ [name]: value });
   }
 
+  onsubmit = async (event) => {
+    event.preventDefault();
+    const { criaDespesa, financialAction } = this.props;
+    const data = await financialAction();
+    this.setState({ exchangeRates: data });
+    criaDespesa(this.state);
+    this.setState((prevState) => ({
+      id: prevState.id + 1,
+      value: 0,
+      description: '',
+    }));
+  };
+
   render() {
     const {
-      despesas,
-      descricao,
-      moedas,
-      pagamento,
-      categoria,
+      value,
+      description,
+      currency,
+      method,
+      tag,
     } = this.state;
 
     const { currencies } = this.props;
@@ -44,8 +59,8 @@ export class Form extends Component {
             <input
               type="text"
               id="despesas"
-              name="despesas"
-              value={ despesas }
+              name="value"
+              value={ value }
               onChange={ this.handleChange }
               data-testid="value-input"
             />
@@ -55,8 +70,8 @@ export class Form extends Component {
             <input
               type="text"
               id="descricao"
-              name="descricao"
-              value={ descricao }
+              name="description"
+              value={ description }
               onChange={ this.handleChange }
               data-testid="description-input"
             />
@@ -64,10 +79,10 @@ export class Form extends Component {
           <label htmlFor="moedas">
             Moeda:
             <select
-              name="moedas"
+              name="currency"
               id="moedas"
               onChange={ this.handleChange }
-              value={ moedas }
+              value={ currency }
             >
               {
                 currencies.map((moeda) => (
@@ -83,11 +98,11 @@ export class Form extends Component {
           <label htmlFor="pagamento">
             Método de Pagamento:
             <select
-              name="pagamento"
+              name="method"
               id="pagamento"
               onChange={ this.handleChange }
               data-testid="method-input"
-              value={ pagamento }
+              value={ method }
             >
               <option>Dinheiro</option>
               <option>Cartão de crédito</option>
@@ -97,9 +112,9 @@ export class Form extends Component {
           <label htmlFor="categoria">
             Categoria:
             <select
-              name="categoria"
+              name="tag"
               id="categoria"
-              value={ categoria }
+              value={ tag }
               onChange={ this.handleChange }
               data-testid="tag-input"
             >
@@ -110,6 +125,14 @@ export class Form extends Component {
               <option>Saúde</option>
             </select>
           </label>
+          <button
+            type="submit"
+            name="'Adicionar despesa'"
+            label="Adicionar despesa"
+            onClick={ this.onsubmit }
+          >
+            Adicionar despesa
+          </button>
         </form>
       </div>
     );
@@ -122,10 +145,12 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   financialAction: () => dispatch(curreniciesAction()),
+  criaDespesa: (state) => dispatch(expensesAction(state)),
 });
 
 Form.propTypes = {
   financialAction: PropTypes.func.isRequired,
+  criaDespesa: PropTypes.func.isRequired,
   currencies: PropTypes.arrayOf.isRequired,
 };
 

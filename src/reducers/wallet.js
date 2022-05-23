@@ -1,4 +1,4 @@
-import { FINANCIAL_INFO } from '../actions/index';
+import { FINANCIAL_INFO, EXPENSES_INFO } from '../actions/index';
 
 const INITIAL_STATE = {
   currencies: [],
@@ -11,7 +11,12 @@ const moneyReducer = (state = INITIAL_STATE, action) => {
     return {
       ...state, currencies: action.state,
     };
+  case EXPENSES_INFO:
+    return {
+      ...state, expenses: [...state.expenses, { ...action.state }],
+    };
   default:
+
     return state;
   }
 };
